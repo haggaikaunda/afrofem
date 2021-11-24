@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>RGB</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Raleway:300"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+  <body>
+    <h1>
+      The Great
+      <span id="color-display">
+        <span id="r" class="rgb">155</span>
+        <!-- <div id="r" class="rgb">R</div> -->
+        <span id="g" class="rgb">255</span>
+        <span id="b" class="rgb">203</span>
+      </span>
+      Guessing Game
+    </h1>
+    <div id="stripe">
+      <button id="reset">New Colors</button>
+      <span id="message">Try Again</span>
+      <button class="mode">Easy</button>
+      <button class="mode selected">Hard</button>
+    </div>
+
+    <div id="container">
+      <div
+        class="square"
+        style="
+          background-image: linear-gradient(
+            rgba(255, 0, 0, 0),
+            rgba(255, 0, 0, 1)
+          );
+        "
+      ></div>
+      <div class="square" style="background-color: green"></div>
+      <div class="square" style="background-color: blue"></div>
+      <div class="square" style="background-color: yellow"></div>
+      <div class="square" style="background-color: magenta"></div>
+      <div class="square" style="background-color: cyan"></div>
+    </div>
+
+    <script type="text/javascript" src="app.js"></script>
+  </body>
+</html>
