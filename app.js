@@ -13,6 +13,7 @@ const identifiers = {
   },
 };
 
+const bkImageRegex = /([0-9]+), ([0-9]+), ([0-9]+)/;
 const headerIds = ["color-display", "r", "g", "b"];
 const [header, rElement, gElement, bElement] = headerIds.map((id) =>
   document.getElementById(id)
@@ -40,12 +41,13 @@ levels.forEach((level) => {
   });
 });
 
+// event handler for the RESET button, when clicked it will...
+// 1) generate new color values for each of the squares and set them.
+// 2) get a random rgb color from the ones generated and set it in the header.
 document
   .getElementById(identifiers.id.reset)
   .addEventListener("click", function () {
     const rgbValues = [];
-
-    console.log(gameLevel);
 
     squares.forEach((square) => {
       const values = rgbValueGenerator();
@@ -60,10 +62,58 @@ document
     setHeaderRgbBackgroundImages(hr, hg, hb);
   });
 
+squares.forEach((square) => {
+  square.addEventListener("click", function () {
+    // get the header read and
+    const headerRgb = [rElement, gElement, bElement].map((e) => {
+      const [r, g, b] = extractRgb(e);
+      return r || g || b;
+    });
+
+    const squareRgb = extractRgb(square);
+    if (arrayEqual(headerRgb, squareRgb)) {
+      const [hr, hg, hb] = headerRgb;
+      const bkImage = mkBackGroundImage(hr, hg, hb);
+      setBackGroundImagesAfterWin(bkImage);
+    } else {
+      square.classList.add("hidden");
+    }
+  });
+});
+
+function setBackGroundImagesAfterWin(backGroundImage) {
+  squares.forEach((sq) => {
+    sq.style.backgroundImage = backGroundImage;
+    sq.classList.remove("hidden");
+  });
+}
+
+function arrayEqual(first, second) {
+  if (first.length === second.length) {
+    const reducer = (prev, current, index) => {
+      return prev && current === second[index];
+    };
+    return first.reduce(reducer, true);
+  }
+
+  return false;
+}
+
+function extractRgb(element) {
+  const res = element.style.backgroundImage.match(bkImageRegex);
+  const values = [res[1], res[2], res[3]];
+  return values.map((v) => parseInt(v));
+}
+
+// sets numeric color values in the header as well as the background colors (image)
 function setHeaderRgbBackgroundImages(r, g, b) {
-  rElement.style.backgroundImage = mkBackGroundImage(r, 0, 0);
-  gElement.style.backgroundImage = mkBackGroundImage(0, g, 0);
-  bElement.style.backgroundImage = mkBackGroundImage(0, 0, b);
+  const setElementValues = (element, red, green, blue) => {
+    element.style.backgroundImage = mkBackGroundImage(red, green, blue);
+    element.innerHTML = red || green || blue;
+  };
+  setElementValues(rElement, r, 0, 0);
+  setElementValues(gElement, 0, g, 0);
+  setElementValues(bElement, 0, 0, b);
 }
 
 function rgbGenerator(level) {
@@ -76,7 +126,7 @@ function rgbGenerator(level) {
   if (level === "Easy") {
     // in easy mode, fix one color.
     const index = randInt(2);
-    const fixedValue = genRgbInt();
+    const fixedValue = 0;
     return () => {
       const values = generateRgbValues();
       values[index] = fixedValue;
@@ -97,6 +147,7 @@ function genRgbInt() {
 }
 
 function mkBackGroundImage(r, g, b) {
-  const rgb = `rgb(${r}, ${g}, ${b})`;
-  return `linear-gradient(${rgb}, ${rgb})`;
+  const start = `rgba(${r}, ${g}, ${b}, 0)`;
+  const end = `rgba(${r}, ${g}, ${b}, 1)`;
+  return `linear-gradient(to right, ${start}, ${end})`;
 }
