@@ -116,6 +116,24 @@ function setHeaderRgbBackgroundImages(r, g, b) {
   setElementValues(bElement, 0, 0, b);
 }
 
+function getSquares() {
+  const squares = [
+    ...document.getElementsByClassName(identifiers.class.square),
+  ];
+
+  squares.forEach((sq) => sq.classList.remove("hidden"));
+  if (gameLevel === "Easy") {
+    const ignoredSq = squares.filter((_, index) => index >= 3);
+    ignoredSq.forEach((sq) => sq.classList.add("hidden"));
+
+    return squares.slice(3);
+  }
+
+  return squares;
+}
+
+// RGB Generator taking into account the level.
+// Returns a function which returns a list of three r, g, b values when invoked.
 function rgbGenerator(level) {
   const generateRgbValues = () => {
     const rgb = () => genRgbInt();
@@ -126,7 +144,7 @@ function rgbGenerator(level) {
   if (level === "Easy") {
     // in easy mode, fix one color.
     const index = randInt(2);
-    const fixedValue = 0;
+    const fixedValue = genRgbInt();
     return () => {
       const values = generateRgbValues();
       values[index] = fixedValue;
@@ -147,7 +165,7 @@ function genRgbInt() {
 }
 
 function mkBackGroundImage(r, g, b) {
-  const start = `rgba(${r}, ${g}, ${b}, 0)`;
-  const end = `rgba(${r}, ${g}, ${b}, 1)`;
-  return `linear-gradient(to right, ${start}, ${end})`;
+  const start = `rgba(${r}, ${g}, ${b})`;
+  const end = `rgba(${r}, ${g}, ${b})`;
+  return `linear-gradient(${start}, ${end})`;
 }
