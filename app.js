@@ -20,6 +20,7 @@ const bElement = document.getElementById(identifiers.id.b);
 const levels = Array.from(
   document.getElementsByClassName(identifiers.class.mode)
 );
+
 // game mode.
 let gameLevel = levels.find((level) => {
   const classList = [...level.classList];
@@ -39,6 +40,41 @@ levels.forEach((level) => {
     squares = getSquares(gameLevel);
   });
 });
+
+// event handler for the RESET button, when clicked it will...
+// 1) generate new color values for each of the squares and set them.
+// 2) get a random rgb color from the ones generated and set it in the header.
+document
+  .getElementById(identifiers.id.reset)
+  .addEventListener("click", function () {
+    const rgbValues = [];
+
+    squares.forEach((square) => {
+      const values = rgbGenerator();
+      setBackGroundColor(square, values);
+      rgbValues.push(values);
+    });
+
+    // change the text
+    this.innerHTML = "New Colors";
+
+    // pick a random RGB color from the values generated for the squares
+    const [hr, hg, hb] = rgbValues[randInt(squares.length - 1)];
+    setHeaderRgbBackgroundImages(hr, hg, hb);
+  });
+
+function rgbGenerator() {
+  // TODO generate an array of red, green, blue color values
+}
+
+function setBackGroundColor(element, values) {
+  // TODO: given an html element and an array [r, g, b],
+  // set the element's background color using the rgb values provided.
+}
+
+function setHeaderRgbBackgroundImages(r, g, b) {
+  // given rgb values, set the header's RGB background colors
+}
 
 function getSquares(level) {
   const tiles = Array.from(
