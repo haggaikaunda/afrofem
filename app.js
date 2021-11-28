@@ -25,3 +25,21 @@ let gameLevel = levels.find((level) => {
   const classList = [...level.classList];
   return classList.includes(identifiers.class.selected);
 }).innerHTML;
+
+let squares = getSquares(gameLevel);
+
+// set up event listeners to toggle between game modes.
+// reset game level and squares
+levels.forEach((level) => {
+  level.addEventListener("click", function () {
+    levels.forEach((mode) => mode.classList.remove(identifiers.class.selected));
+    this.classList.add(identifiers.class.selected);
+
+    gameLevel = this.innerHTML;
+    squares = getSquares(gameLevel);
+  });
+});
+
+function getSquares(level) {
+  // TODO: get squares to display on the screen
+}
