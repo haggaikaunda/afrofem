@@ -59,21 +59,43 @@ document
     this.innerHTML = "New Colors";
 
     // pick a random RGB color from the values generated for the squares
-    const [hr, hg, hb] = rgbValues[randInt(squares.length - 1)];
+    const randomIndex = Math.floor(Math.random() * squares.length); // genRandInt
+    const [hr, hg, hb] = rgbValues[randomIndex];
     setHeaderRgbBackgroundImages(hr, hg, hb);
   });
 
+// Returns a function which returns a list of three r, g, b values when invoked.
 function rgbGenerator() {
-  // TODO generate an array of red, green, blue color values
+  const generateRgbValues = () => {
+    // genRgbInt
+    const rgb = () => Math.floor(Math.random() * 256);
+    return [rgb(), rgb(), rgb()];
+  };
+
+  // In hard mode, we generate radom values every time.
+  return generateRgbValues();
 }
 
-function setBackGroundColor(element, values) {
-  // TODO: given an html element and an array [r, g, b],
-  // set the element's background color using the rgb values provided.
+function setBackGroundColor(e, rgbValues) {
+  const [r, b, g] = rgbValues;
+  e.style.backgroundColor = mkBackGroundColor(r, b, g);
+  e.dataset.rgbValues = JSON.stringify(rgbValues);
 }
 
+function mkBackGroundColor(r, g, b) {
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+// sets numeric color values in the header as well as the background colors (image)
 function setHeaderRgbBackgroundImages(r, g, b) {
-  // given rgb values, set the header's RGB background colors
+  const setElementValues = (element, red, green, blue) => {
+    setBackGroundColor(element, [red, green, blue]);
+    element.innerHTML = red || green || blue;
+  };
+
+  setElementValues(rElement, r, 0, 0);
+  setElementValues(gElement, 0, g, 0);
+  setElementValues(bElement, 0, 0, b);
 }
 
 function getSquares(level) {
