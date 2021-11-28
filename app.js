@@ -13,7 +13,6 @@ const identifiers = {
   },
 };
 
-const header = document.getElementById(identifiers.id.colorDisplay);
 const rElement = document.getElementById(identifiers.id.r);
 const gElement = document.getElementById(identifiers.id.g);
 const bElement = document.getElementById(identifiers.id.b);
@@ -21,17 +20,15 @@ const bElement = document.getElementById(identifiers.id.b);
 const levels = Array.from(
   document.getElementsByClassName(identifiers.class.mode)
 );
-const squares = Array.from(
-  document.getElementsByClassName(identifiers.class.square)
-);
-
 // game mode.
 let gameLevel = levels.find((level) => {
   const classList = [...level.classList];
   return classList.includes(identifiers.class.selected);
 }).innerHTML;
 
-let rgbValueGenerator = rgbGenerator(gameLevel);
+let squares = getSquares(gameLevel);
+
+let rgbValueGenerator = rgbGenerator();
 
 // set up event listeners to toggle between game modes.
 levels.forEach((level) => {
@@ -40,7 +37,8 @@ levels.forEach((level) => {
     this.classList.add(identifiers.class.selected);
 
     gameLevel = this.innerHTML;
-    rgbValueGenerator = rgbGenerator(gameLevel);
+    squares = getSquares(gameLevel);
+    rgbValueGenerator = rgbGenerator();
   });
 });
 
@@ -54,10 +52,12 @@ document
 
     squares.forEach((square) => {
       const values = rgbValueGenerator();
-      const [r, g, b] = values;
       setBackGroundColor(square, values);
       rgbValues.push(values);
     });
+
+    // change the text
+    this.innerHTML = "New Colors";
 
     // pick a random RGB color from the values generated for the squares
     const [hr, hg, hb] = rgbValues[randInt(squares.length - 1)];
@@ -96,7 +96,6 @@ function arrayEqual(first, second) {
     };
     return first.reduce(reducer, true);
   }
-
   return false;
 }
 
@@ -117,41 +116,32 @@ function setHeaderRgbBackgroundImages(r, g, b) {
   setElementValues(bElement, 0, 0, b);
 }
 
-function getSquares() {
-  const squares = [
-    ...document.getElementsByClassName(identifiers.class.square),
-  ];
+function getSquares(level) {
+  const tiles = Array.from(
+    document.getElementsByClassName(identifiers.class.square)
+  );
 
-  squares.forEach((sq) => sq.classList.remove("hidden"));
-  if (gameLevel === "Easy") {
-    const ignoredSq = squares.filter((_, index) => index >= 3);
-    ignoredSq.forEach((sq) => sq.classList.add("hidden"));
+  tiles.forEach((sq) => sq.classList.remove("hidden"));
 
-    return squares.slice(3);
+  if (level === "Easy") {
+    const hiddenSquares = tiles.slice(3, tiles.length);
+    const squares = tiles.slice(0, 3);
+
+    hiddenSquares.forEach((sq) => sq.classList.add("hidden"));
+
+    return squares;
   }
 
-  return squares;
+  return tiles;
 }
 
 // RGB Generator taking into account the level.
 // Returns a function which returns a list of three r, g, b values when invoked.
-function rgbGenerator(level) {
+function rgbGenerator() {
   const generateRgbValues = () => {
     const rgb = () => genRgbInt();
     return [rgb(), rgb(), rgb()];
   };
-
-  // r = 0, g = 1, b = 2
-  if (level === "Easy") {
-    // in easy mode, fix one color.
-    const index = randInt(2);
-    const fixedValue = genRgbInt();
-    return () => {
-      const values = generateRgbValues();
-      values[index] = fixedValue;
-      return values;
-    };
-  }
 
   // In hard mode, we generate radom values every time.
   return () => generateRgbValues();
