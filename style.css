@@ -16,7 +16,7 @@ body {
   margin: 1%;
   float: left;
   border: 1px solid white;
-  background-color: #000;
+  background-color: antiquewhite;
   transition: background 0.5s;
   cursor: pointer;
   border-radius: 20%;
@@ -33,36 +33,30 @@ h1 {
 
 #color-display {
   color: white;
-  isolation: isolate;
-  /* background-blend-mode: difference; */
-  /* background-color: white; */
   display: block;
   font-size: 0.9em;
 }
 
 .rgb {
-  mix-blend-mode: screen;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 5.2em;
+  width: 2.2em;
   height: 2.2em;
-  margin: auto -30px;
   font-size: 0.5em;
-  border-radius: 50%;
+  border-radius: 40%;
 }
 
 #r {
-  background-image: linear-gradient(rgb(255, 0, 0), rgb(255, 0, 0));
+  background-color: rgb(255, 0, 0);
 }
 
 #g {
-  background-image: linear-gradient(rgb(0, 255, 0), rgba(0, 255, 0));
-  /* background-color: green; */
+  background-color: rgb(0, 255, 0);
 }
 
 #b {
-  background-image: linear-gradient(rgb(0, 0, 255), rgb(0, 0, 255));
+  background-color: rgb(0, 0, 255);
 }
 
 #stripe {

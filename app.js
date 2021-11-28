@@ -14,10 +14,11 @@ const identifiers = {
 };
 
 const bkImageRegex = /([0-9]+), ([0-9]+), ([0-9]+)/;
-const headerIds = ["color-display", "r", "g", "b"];
-const [header, rElement, gElement, bElement] = headerIds.map((id) =>
-  document.getElementById(id)
-);
+
+const header = document.getElementById(identifiers.id.colorDisplay);
+const rElement = document.getElementById(identifiers.id.r);
+const gElement = document.getElementById(identifiers.id.g);
+const bElement = document.getElementById(identifiers.id.b);
 
 const levels = [...document.getElementsByClassName(identifiers.class.mode)];
 const squares = [...document.getElementsByClassName(identifiers.class.square)];
@@ -53,7 +54,7 @@ document
       const values = rgbValueGenerator();
       const [r, g, b] = values;
       const backgroundImage = mkBackGroundImage(r, g, b);
-      square.style.backgroundImage = backgroundImage;
+      square.style.backgroundColor = backgroundImage;
       rgbValues.push(values);
     });
 
@@ -83,7 +84,7 @@ squares.forEach((square) => {
 
 function setBackGroundImagesAfterWin(backGroundImage) {
   squares.forEach((sq) => {
-    sq.style.backgroundImage = backGroundImage;
+    sq.style.backgroundColor = backGroundImage;
     sq.classList.remove("hidden");
   });
 }
@@ -100,7 +101,7 @@ function arrayEqual(first, second) {
 }
 
 function extractRgb(element) {
-  const res = element.style.backgroundImage.match(bkImageRegex);
+  const res = element.style.backgroundColor.match(bkImageRegex);
   const values = [res[1], res[2], res[3]];
   return values.map((v) => parseInt(v));
 }
@@ -108,7 +109,7 @@ function extractRgb(element) {
 // sets numeric color values in the header as well as the background colors (image)
 function setHeaderRgbBackgroundImages(r, g, b) {
   const setElementValues = (element, red, green, blue) => {
-    element.style.backgroundImage = mkBackGroundImage(red, green, blue);
+    element.style.backgroundColor = mkBackGroundImage(red, green, blue);
     element.innerHTML = red || green || blue;
   };
   setElementValues(rElement, r, 0, 0);
@@ -167,5 +168,6 @@ function genRgbInt() {
 function mkBackGroundImage(r, g, b) {
   const start = `rgba(${r}, ${g}, ${b})`;
   const end = `rgba(${r}, ${g}, ${b})`;
-  return `linear-gradient(${start}, ${end})`;
+  // return `linear-gradient(${start}, ${end})`;
+  return start;
 }
