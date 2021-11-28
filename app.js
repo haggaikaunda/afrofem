@@ -64,6 +64,49 @@ document
     setHeaderRgbBackgroundImages(hr, hg, hb);
   });
 
+// set up event handler for each of the squares
+// when clicked it will either be hidden if wrong guess or
+// set the background color of all other squares to the winning color
+squares.forEach((square) => {
+  square.addEventListener("click", function () {
+    const headerRgb = [rElement, gElement, bElement].map((e) => {
+      const [r, g, b] = getRgbValues(e);
+      return r || g || b;
+    });
+
+    const squareRgb = getRgbValues(square);
+    if (arrayEqual(headerRgb, squareRgb)) {
+      const [hr, hg, hb] = headerRgb;
+      const bkColor = mkBackGroundColor(hr, hg, hb);
+      setBackGroundColorsAfterWin(bkColor);
+    } else {
+      square.classList.add("hidden");
+    }
+  });
+});
+
+function setBackGroundColorsAfterWin(backGroundColor) {
+  squares.forEach((sq) => {
+    sq.style.backgroundColor = backGroundColor;
+    sq.classList.remove("hidden");
+  });
+}
+
+function arrayEqual(first, second) {
+  if (first.length === second.length) {
+    const reducer = (prev, current, index) => {
+      return prev && current === second[index];
+    };
+    return first.reduce(reducer, true);
+  }
+  return false;
+}
+
+function getRgbValues(element) {
+  const rgbValues = element.dataset.rgbValues;
+  return JSON.parse(rgbValues);
+}
+
 // Returns a function which returns a list of three r, g, b values when invoked.
 function rgbGenerator() {
   const generateRgbValues = () => {
