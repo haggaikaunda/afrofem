@@ -41,5 +41,20 @@ levels.forEach((level) => {
 });
 
 function getSquares(level) {
-  // TODO: get squares to display on the screen
+  const tiles = Array.from(
+    document.getElementsByClassName(identifiers.class.square)
+  );
+
+  tiles.forEach((sq) => sq.classList.remove("hidden"));
+
+  if (level === "Easy") {
+    const hiddenSquares = tiles.slice(3, tiles.length);
+    const squares = tiles.slice(0, 3);
+
+    hiddenSquares.forEach((sq) => sq.classList.add("hidden"));
+
+    return squares;
+  }
+
+  return tiles;
 }
