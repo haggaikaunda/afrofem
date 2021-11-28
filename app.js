@@ -13,15 +13,17 @@ const identifiers = {
   },
 };
 
-const bkImageRegex = /([0-9]+), ([0-9]+), ([0-9]+)/;
-
 const header = document.getElementById(identifiers.id.colorDisplay);
 const rElement = document.getElementById(identifiers.id.r);
 const gElement = document.getElementById(identifiers.id.g);
 const bElement = document.getElementById(identifiers.id.b);
 
-const levels = [...document.getElementsByClassName(identifiers.class.mode)];
-const squares = [...document.getElementsByClassName(identifiers.class.square)];
+const levels = Array.from(
+  document.getElementsByClassName(identifiers.class.mode)
+);
+const squares = Array.from(
+  document.getElementsByClassName(identifiers.class.square)
+);
 
 // game mode.
 let gameLevel = levels.find((level) => {
@@ -53,8 +55,7 @@ document
     squares.forEach((square) => {
       const values = rgbValueGenerator();
       const [r, g, b] = values;
-      const backgroundImage = mkBackGroundImage(r, g, b);
-      square.style.backgroundColor = backgroundImage;
+      setBackGroundColor(square, values);
       rgbValues.push(values);
     });
 
@@ -65,26 +66,25 @@ document
 
 squares.forEach((square) => {
   square.addEventListener("click", function () {
-    // get the header read and
     const headerRgb = [rElement, gElement, bElement].map((e) => {
-      const [r, g, b] = extractRgb(e);
+      const [r, g, b] = getRgbValues(e);
       return r || g || b;
     });
 
-    const squareRgb = extractRgb(square);
+    const squareRgb = getRgbValues(square);
     if (arrayEqual(headerRgb, squareRgb)) {
       const [hr, hg, hb] = headerRgb;
-      const bkImage = mkBackGroundImage(hr, hg, hb);
-      setBackGroundImagesAfterWin(bkImage);
+      const bkColor = mkBackGroundColor(hr, hg, hb);
+      setBackGroundColorsAfterWin(bkColor);
     } else {
       square.classList.add("hidden");
     }
   });
 });
 
-function setBackGroundImagesAfterWin(backGroundImage) {
+function setBackGroundColorsAfterWin(backGroundColor) {
   squares.forEach((sq) => {
-    sq.style.backgroundColor = backGroundImage;
+    sq.style.backgroundColor = backGroundColor;
     sq.classList.remove("hidden");
   });
 }
@@ -100,18 +100,18 @@ function arrayEqual(first, second) {
   return false;
 }
 
-function extractRgb(element) {
-  const res = element.style.backgroundColor.match(bkImageRegex);
-  const values = [res[1], res[2], res[3]];
-  return values.map((v) => parseInt(v));
+function getRgbValues(element) {
+  const rgbValues = element.dataset.rgbValues;
+  return JSON.parse(rgbValues);
 }
 
 // sets numeric color values in the header as well as the background colors (image)
 function setHeaderRgbBackgroundImages(r, g, b) {
   const setElementValues = (element, red, green, blue) => {
-    element.style.backgroundColor = mkBackGroundImage(red, green, blue);
+    setBackGroundColor(element, [red, green, blue]);
     element.innerHTML = red || green || blue;
   };
+
   setElementValues(rElement, r, 0, 0);
   setElementValues(gElement, 0, g, 0);
   setElementValues(bElement, 0, 0, b);
@@ -165,9 +165,12 @@ function genRgbInt() {
   return randInt(255);
 }
 
-function mkBackGroundImage(r, g, b) {
-  const start = `rgba(${r}, ${g}, ${b})`;
-  const end = `rgba(${r}, ${g}, ${b})`;
-  // return `linear-gradient(${start}, ${end})`;
-  return start;
+function setBackGroundColor(e, rgbValues) {
+  const [r, b, g] = rgbValues;
+  e.style.backgroundColor = mkBackGroundColor(r, b, g);
+  e.dataset.rgbValues = JSON.stringify(rgbValues);
+}
+
+function mkBackGroundColor(r, g, b) {
+  return `rgb(${r}, ${g}, ${b})`;
 }
